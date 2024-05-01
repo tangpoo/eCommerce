@@ -1,5 +1,7 @@
 package com.potato.ecommerce.domain.order.service;
 
+import static com.potato.ecommerce.global.config.redis.CacheConfig.CACHE_180_SECOND;
+
 import com.potato.ecommerce.domain.member.dto.ResponseMember;
 import com.potato.ecommerce.domain.member.entity.MemberEntity;
 import com.potato.ecommerce.domain.member.repository.MemberJpaRepository;
@@ -22,6 +24,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +42,7 @@ public class OrderService {
     private final HistoryService historyService;
 
     @DistributedLock(key = "#orderProducts.![productId].toString()")
+    @CacheEvict(cacheNames = CACHE_180_SECOND, key = "'order:' + #p0", beforeInvocation = false)
     public OrderInfo createOrder(
         Long memberId,
         Long receiverId,
@@ -92,6 +97,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CACHE_180_SECOND, key = "'order:' + #p0")
     public RestPage<OrderList> getOrders(
         String subject,
         int page,
@@ -101,6 +107,7 @@ public class OrderService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = CACHE_180_SECOND, key = "'order:' + #p0", beforeInvocation = false)
     public OrderInfo completeOrder(String orderNum) {
         OrderEntity orderEntity = orderJpaRepository.findByOrderNum(orderNum)
             .orElseThrow(() -> new EntityNotFoundException(
@@ -119,6 +126,7 @@ public class OrderService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = CACHE_180_SECOND, key = "'order:' + #p0", beforeInvocation = false)
     public OrderInfo cancelOrder(String orderNum) {
         OrderEntity orderEntity = orderJpaRepository.findByOrderNum(orderNum)
             .orElseThrow(() -> new EntityNotFoundException(
