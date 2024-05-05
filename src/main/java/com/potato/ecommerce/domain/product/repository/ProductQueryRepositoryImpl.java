@@ -28,6 +28,8 @@ public class ProductQueryRepositoryImpl implements ProductQueryRepository {
     public RestPage<ProductListResponse> getProducts(String subject, int page, int size) {
         QProductEntity product = productEntity;
 
+        Pageable pageable = PageRequest.of(page, size);
+
         List<ProductListResponse> products =
             queryFactory.select(fields(ProductListResponse.class,
                     product.id.as("productId"),
@@ -38,11 +40,11 @@ public class ProductQueryRepositoryImpl implements ProductQueryRepository {
                 .from(product)
                 .where(product.store.businessNumber.eq(subject))
                 .orderBy(product.createdAt.asc())
-                .offset(page)
-                .limit(size)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        Pageable pageable = PageRequest.of(page, size);
+
         return new RestPage<>(new PageImpl<>(products, pageable, products.size()));
     }
 
