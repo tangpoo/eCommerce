@@ -54,12 +54,12 @@ public class ProductQueryRepositoryImpl implements ProductQueryRepository {
                 fields(ProductSimpleResponse.class,
                     productEntity.id,
                     productEntity.name,
-                    productEntity.price,
-                    imageEntity.url))
+                    productEntity.price
+                    ))
             .from(productEntity)
-            .leftJoin(imageEntity).on(imageEntity.productEntity.id.eq(productEntity.id))
+//            .leftJoin(imageEntity).on(imageEntity.productEntity.id.eq(productEntity.id))
             .orderBy(productEntity.createdAt.asc())
-            .where(productEntity.id.gt((long) page * size))
+            .offset((long) page * size)
             .limit(size)
             .fetch();
 
