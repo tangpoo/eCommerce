@@ -37,7 +37,7 @@ export function setup() {
   return token;
 }
 
-const uri = "http://54.180.79.141:8080";
+const uri = "http://3.34.91.233:8080";
 const URI = uri + "/api/v1";
 
 const params = {
