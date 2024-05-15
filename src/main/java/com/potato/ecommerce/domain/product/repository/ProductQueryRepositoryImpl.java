@@ -54,7 +54,8 @@ public class ProductQueryRepositoryImpl implements ProductQueryRepository {
                 fields(ProductSimpleResponse.class,
                     productEntity.id,
                     productEntity.name,
-                    productEntity.price
+                    productEntity.price,
+                    imageEntity.url
                     ))
             .from(productEntity)
             .leftJoin(imageEntity).on(imageEntity.productEntity.id.eq(productEntity.id))
