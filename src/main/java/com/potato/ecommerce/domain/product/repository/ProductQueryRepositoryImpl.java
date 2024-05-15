@@ -57,7 +57,7 @@ public class ProductQueryRepositoryImpl implements ProductQueryRepository {
                     productEntity.price
                     ))
             .from(productEntity)
-//            .leftJoin(imageEntity).on(imageEntity.productEntity.id.eq(productEntity.id))
+            .leftJoin(imageEntity).on(imageEntity.productEntity.id.eq(productEntity.id))
             .orderBy(productEntity.createdAt.asc())
             .offset((long) page * size)
             .limit(size)
