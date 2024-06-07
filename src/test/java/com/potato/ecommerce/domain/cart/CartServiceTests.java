@@ -74,7 +74,8 @@ public class CartServiceTests {
         Integer quantity = 10;
         final CartEntity cart = CartSteps.createCart();
 
-        given(cartJpaRepository.findByMemberEmailAndId(email, cartId)).willReturn(Optional.of(cart));
+        given(cartJpaRepository.findByMemberEmailAndId(email, cartId)).willReturn(
+            Optional.of(cart));
 
         // Act
         final CartInfo response = cartService.updateCart(email, cartId, quantity);
@@ -90,7 +91,8 @@ public class CartServiceTests {
         Long cartId = 1L;
         final CartEntity cart = CartSteps.createCart();
 
-        given(cartJpaRepository.findByMemberEmailAndId(email, cartId)).willReturn(Optional.of(cart));
+        given(cartJpaRepository.findByMemberEmailAndId(email, cartId)).willReturn(
+            Optional.of(cart));
 
         // Act
         cartService.deleteCart(email, cartId);
