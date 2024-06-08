@@ -1,7 +1,6 @@
 package com.potato.ecommerce.domain.order;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -79,7 +78,7 @@ public class HistoryServiceTests {
         historyService.deleteHistory(orderNum);
 
         // Assert
-        verify(historyJpaRepository,  times(1)).deleteAll(historyList);
+        verify(historyJpaRepository, times(1)).deleteAll(historyList);
     }
 
     @Test

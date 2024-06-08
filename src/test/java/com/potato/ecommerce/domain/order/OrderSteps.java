@@ -2,13 +2,10 @@ package com.potato.ecommerce.domain.order;
 
 import com.potato.ecommerce.domain.member.MemberSteps;
 import com.potato.ecommerce.domain.member.entity.MemberEntity;
-import com.potato.ecommerce.domain.order.controller.dto.request.CreateOrderRequestDTO;
-import com.potato.ecommerce.domain.order.dto.OrderProduct;
 import com.potato.ecommerce.domain.order.entity.OrderEntity;
 import com.potato.ecommerce.domain.payment.dto.PayType;
 import com.potato.ecommerce.domain.receiver.ReceiverSteps;
 import com.potato.ecommerce.domain.receiver.entity.ReceiverEntity;
-import java.util.List;
 import java.util.UUID;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
