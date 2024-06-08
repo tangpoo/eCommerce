@@ -128,7 +128,6 @@ public class OrderServiceTests {
     }
 
 
-
     @Test
     void Order_cancel() {
         // Arrange
@@ -166,10 +165,9 @@ public class OrderServiceTests {
     @Nested
     class Order_find_all {
 
-        private String subject = "test@email.com";
-        private int page = 0;
-        private int size = 10;
-
+        private final String subject = "test@email.com";
+        private final int page = 0;
+        private final int size = 10;
 
 
         @Test
@@ -177,13 +175,16 @@ public class OrderServiceTests {
             // Arrange
             final OrderEntity order1 = OrderSteps.createOrder();
             final OrderEntity order2 = OrderSteps.createOrder();
-            final OrderList orderList1 = OrderList.builder().status(OrderStatus.COMPLETE).orderNum(order1.getOrderNum()).build();
-            final OrderList orderList2 = OrderList.builder().status(OrderStatus.COMPLETE).orderNum(order2.getOrderNum()).build();
+            final OrderList orderList1 = OrderList.builder().status(OrderStatus.COMPLETE)
+                .orderNum(order1.getOrderNum()).build();
+            final OrderList orderList2 = OrderList.builder().status(OrderStatus.COMPLETE)
+                .orderNum(order2.getOrderNum()).build();
             final List<OrderList> orderLists = new ArrayList<>();
 
             final PageRequest pageable = PageRequest.of(page, size);
             final int count = 2;
-            final RestPage<OrderList> restPage = new RestPage<>(new PageImpl<>(orderLists, pageable, count));
+            final RestPage<OrderList> restPage = new RestPage<>(
+                new PageImpl<>(orderLists, pageable, count));
 
             orderLists.add(orderList1);
             orderLists.add(orderList2);
@@ -198,20 +199,24 @@ public class OrderServiceTests {
             assertThat(response.get().findFirst().get()).isEqualTo(orderList1);
             verify(orderQueryRepository, times(0)).getOrders(anyString(), anyInt(), anyInt());
         }
+
         @Test
         void redis_cache_miss() {
             // Arrange
             final OrderEntity order1 = OrderSteps.createOrder();
-            final OrderList orderList1 = OrderList.builder().status(OrderStatus.COMPLETE).orderNum(order1.getOrderNum()).build();
+            final OrderList orderList1 = OrderList.builder().status(OrderStatus.COMPLETE)
+                .orderNum(order1.getOrderNum()).build();
             final OrderEntity order2 = OrderSteps.createOrder();
-            final OrderList orderList2 = OrderList.builder().status(OrderStatus.COMPLETE).orderNum(order2.getOrderNum()).build();
+            final OrderList orderList2 = OrderList.builder().status(OrderStatus.COMPLETE)
+                .orderNum(order2.getOrderNum()).build();
             List<OrderList> orderLists = new ArrayList<>();
             orderLists.add(orderList1);
             orderLists.add(orderList2);
 
             final PageRequest pageable = PageRequest.of(page, size);
             int count = 2;
-            final RestPage<OrderList> restPage = new RestPage<>(new PageImpl<>(orderLists, pageable, count));
+            final RestPage<OrderList> restPage = new RestPage<>(
+                new PageImpl<>(orderLists, pageable, count));
 
             given(redisTemplate.opsForValue()).willReturn(valueOperations);
             given(redisTemplate.opsForValue().get(subject)).willReturn(null);
@@ -221,9 +226,10 @@ public class OrderServiceTests {
             final RestPage<OrderList> response = orderService.getOrders(subject, page, size);
 
             // Assert
-            assertThat(response.get().findFirst().get()).isEqualTo(orderList1);;
+            assertThat(response.get().findFirst().get()).isEqualTo(orderList1);
             verify(orderQueryRepository, times(1)).getOrders(subject, page, size);
-            verify(redisTemplate.opsForValue(), times(1)).set(subject, restPage, 3, TimeUnit.MINUTES);
+            verify(redisTemplate.opsForValue(), times(1)).set(subject, restPage, 3,
+                TimeUnit.MINUTES);
         }
     }
 
