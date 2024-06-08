@@ -6,7 +6,7 @@ import com.potato.ecommerce.domain.receiver.entity.ReceiverEntity;
 
 public class ReceiverSteps {
 
-    static ReceiverEntity createReceiverWithMember(final MemberEntity member) {
+    public static ReceiverEntity createReceiverWithMember(final MemberEntity member) {
         String name = "name";
         String phone = "01011112222";
         String addressName = "addressName";
@@ -29,7 +29,7 @@ public class ReceiverSteps {
 
     static ReceiverEntity createReceiverWithRequestAndMember(final MemberEntity member,
         final ReceiverForm receiverForm) {
-        return ReceiverEntity.builder()
+        return com.potato.ecommerce.domain.receiver.entity.ReceiverEntity.builder()
             .member(member)
             .name(receiverForm.getName())
             .phone(receiverForm.getPhone())
