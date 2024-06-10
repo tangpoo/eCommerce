@@ -28,7 +28,7 @@ jobs:
       - name: Make application.properties
         run: |
          cd ./src/main/resources
-         touch ./application-main.yml
+         touch ./application.yml
          echo "${{ secrets.YML }}" >> ./application.yml
         shell: bash
 
@@ -36,4 +36,4 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: gradlew test
-        run: ./gradlew test -i
+        run: ./gradlew test
