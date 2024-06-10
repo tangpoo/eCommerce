@@ -1,3 +1,80 @@
 spring:
-  profiles:
-    active: main
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/eCommerce
+    username: root
+    password: 1234
+  #    url: jdbc:mysql://database-1.cxsweoc2mrwu.ap-northeast-2.rds.amazonaws.com/eCommerce
+  #    username: admin
+  #    password: 12341234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  autoconfigure:
+    exclude: org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: yallo428@gmail.com
+    password: rryokkjlojrlmghz
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+cloud:
+  aws:
+    credentials:
+      access-key: AKIA3FLD6HDMVHXLYANA
+      secret-key: 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
+    s3:
+      bucket: sparta-potato-ecommerce/productImage
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    cdn:
+      url: https://d36ht1zd4ukrou.cloudfront.net
+
+logging:
+  level:
+    org.hibernate.sql: debug
+    org.hibernate.type: trace
+
+jwt:
+  secret:
+    key: "7Iqk7YyM66W07YOA7L2U65Sp7YG065+9U3ByaW5n6rCV7J2Y7Yqc7YSw7LWc7JuQ67mI7J6F64uI64ukLg=="
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+      base-path: "/manage"
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: potato
+
+payments:
+  toss:
+    test_secret_api_key : "test_sk_5OWRapdA8dzlGXzNNANXVo1zEqZK"
