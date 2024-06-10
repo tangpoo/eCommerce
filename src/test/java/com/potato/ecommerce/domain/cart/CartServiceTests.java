@@ -72,7 +72,7 @@ public class CartServiceTests {
         String email = "test@email.com";
         Long cartId = 1L;
         Integer quantity = 10;
-        final CartEntity cart = CartSteps.createCart();
+        final CartEntity cart = CartSteps.createCart(passwordEncoder);
 
         given(cartJpaRepository.findByMemberEmailAndId(email, cartId)).willReturn(
             Optional.of(cart));
@@ -89,7 +89,7 @@ public class CartServiceTests {
         // Arrange
         String email = "test@email.com";
         Long cartId = 1L;
-        final CartEntity cart = CartSteps.createCart();
+        final CartEntity cart = CartSteps.createCart(passwordEncoder);
 
         given(cartJpaRepository.findByMemberEmailAndId(email, cartId)).willReturn(
             Optional.of(cart));
@@ -105,8 +105,8 @@ public class CartServiceTests {
     void Cart_find_all() {
         // Arrange
         String email = "test@email.com";
-        final CartEntity cart1 = CartSteps.createCart();
-        final CartEntity cart2 = CartSteps.createCart();
+        final CartEntity cart1 = CartSteps.createCart(passwordEncoder);
+        final CartEntity cart2 = CartSteps.createCart(passwordEncoder);
         List<CartEntity> cartList = new ArrayList<>();
         cartList.add(cart1);
         cartList.add(cart2);

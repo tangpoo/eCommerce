@@ -5,11 +5,10 @@ import com.potato.ecommerce.domain.member.MemberSteps;
 import com.potato.ecommerce.domain.member.entity.MemberEntity;
 import com.potato.ecommerce.domain.product.ProductSteps;
 import com.potato.ecommerce.domain.product.entity.ProductEntity;
+import org.mockito.Spy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class CartSteps {
-
-    private static BCryptPasswordEncoder passwordEncoder;
 
     public static CartEntity createCartWithMemberAndProduct(final MemberEntity member,
         final ProductEntity product,
@@ -21,7 +20,7 @@ public class CartSteps {
             .build();
     }
 
-    public static CartEntity createCart() {
+    public static CartEntity createCart(BCryptPasswordEncoder passwordEncoder) {
         return CartEntity.builder()
             .member(MemberSteps.createMember(passwordEncoder))
             .product(ProductSteps.createProduct())

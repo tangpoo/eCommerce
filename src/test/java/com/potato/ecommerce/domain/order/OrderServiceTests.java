@@ -180,11 +180,15 @@ public class OrderServiceTests {
             final OrderList orderList2 = OrderList.builder().status(OrderStatus.COMPLETE)
                 .orderNum(order2.getOrderNum()).build();
             final List<OrderList> orderLists = new ArrayList<>();
+            orderLists.add(orderList1);
+            orderLists.add(orderList2);
 
             final PageRequest pageable = PageRequest.of(page, size);
-            final int count = 2;
+            int count = 2;
             final RestPage<OrderList> restPage = new RestPage<>(
                 new PageImpl<>(orderLists, pageable, count));
+
+            System.out.println("test " + restPage.get().findFirst().get().getOrderNum());
 
             orderLists.add(orderList1);
             orderLists.add(orderList2);

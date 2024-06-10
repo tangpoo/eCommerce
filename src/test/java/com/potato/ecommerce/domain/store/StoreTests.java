@@ -6,7 +6,7 @@ import static com.potato.ecommerce.global.exception.ExceptionMessage.PASSWORD_NO
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.potato.ecommerce.domain.store.entity.StoreEntity;
-import jakarta.xml.bind.ValidationException;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +23,7 @@ public class StoreTests {
         void same_password() {
             // Arrange
             StoreEntity store = StoreSteps.createStore(passwordEncoder);
-            String requestPassword = "12345678";
+            String requestPassword = "123456789";
 
             // Act + Assert
             store.passwordMatches(requestPassword, passwordEncoder);
@@ -39,7 +39,7 @@ public class StoreTests {
             assertThatThrownBy(() -> {
                 store.passwordMatches(requestPassword, passwordEncoder);
             }).isInstanceOf(
-                ValidationException.class).hasMessageContaining(PASSWORD_NOT_MATCH.toString());
+                jakarta.validation.ValidationException.class).hasMessageContaining(PASSWORD_NOT_MATCH.toString());
         }
     }
 
