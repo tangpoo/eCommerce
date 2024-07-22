@@ -109,9 +109,9 @@ public class ProductService {
     }
 
 
-    public RestPage<ProductSimpleResponse> findAllByContainingKeyword(String keyword, int page,
+    public RestPage<ProductSimpleResponse> findAllByContainingKeyword(String keyword, int lastHabitId,
         int size) {
-        return jdbcRepository.findAllByKeyword(searchKeywordEncoding(keyword), page, size);
+        return jdbcRepository.findAllByKeyword(searchKeywordEncoding(keyword), lastHabitId, size);
     }
 
 

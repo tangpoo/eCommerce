@@ -80,11 +80,11 @@ public class ProductController {
     @Operation(summary = "상품 검색 조회")
     public ResponseEntity<RestPage<ProductSimpleResponse>> getProductBySearch(
         @RequestParam String keyword,
-        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "lastHabitId", defaultValue = "0") int lastHabitId,
         @RequestParam(value = "size", defaultValue = "10") int size) {
 
         RestPage<ProductSimpleResponse> products =
-            productService.findAllByContainingKeyword(keyword, page, size);
+            productService.findAllByContainingKeyword(keyword, lastHabitId, size);
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 

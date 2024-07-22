@@ -2,8 +2,9 @@ package com.potato.ecommerce.domain.order.repository.order;
 
 import com.potato.ecommerce.domain.order.dto.OrderList;
 import com.potato.ecommerce.global.util.RestPage;
+import java.util.List;
 
 public interface OrderQueryRepository {
 
-    RestPage<OrderList> getOrders(String subject, int page, int size);
+    List<OrderList> getOrders(String subject, Long lastOrderId, int size);
 }

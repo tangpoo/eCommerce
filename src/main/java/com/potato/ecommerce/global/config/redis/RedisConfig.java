@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.potato.ecommerce.domain.order.dto.OrderList;
 import com.potato.ecommerce.global.util.RestPage;
+import java.util.List;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -71,7 +72,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, RestPage<OrderList>> restPageRedisTemplate(
+    public RedisTemplate<String, List<OrderList>> restPageRedisTemplate(
         RedisConnectionFactory connectionFactory) {
         PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator
             .builder()
@@ -84,7 +85,7 @@ public class RedisConfig {
             .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL)
             .disable(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS);
 
-        var template = new RedisTemplate<String, RestPage<OrderList>>();
+        var template = new RedisTemplate<String, List<OrderList>>();
 
         template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());

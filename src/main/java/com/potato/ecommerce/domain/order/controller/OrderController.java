@@ -12,6 +12,7 @@ import com.potato.ecommerce.global.util.RestPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,15 +62,15 @@ public class OrderController {
 
     @GetMapping
     @Operation(summary = "주문 목록 조회")
-    public ResponseEntity<RestPage<OrderList>> getOrders(
+    public ResponseEntity<List<OrderList>> getOrders(
         HttpServletRequest httpServletRequest,
-        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "0") Long lastOrderId,
         @RequestParam(defaultValue = "10") int size
     ) {
         String subject = getSubject(httpServletRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
-            .body(orderService.getOrders(subject, page, size));
+            .body(orderService.getOrders(subject, lastOrderId, size));
     }
 
     @PostMapping("/{orderNum}/complete")

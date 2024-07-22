@@ -38,7 +38,7 @@ public class OrderService {
     private final OrderJpaRepository orderJpaRepository;
     private final OrderQueryRepository orderQueryRepository;
     private final HistoryService historyService;
-    private final RedisTemplate<String, RestPage<OrderList>> redisTemplate;
+    private final RedisTemplate<String, List<OrderList>> redisTemplate;
 
     @DistributedLock(key = "#orderProducts.![productId].toString()")
     public OrderInfo createOrder(
@@ -95,16 +95,16 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public RestPage<OrderList> getOrders(
+    public List<OrderList> getOrders(
         String subject,
-        int page,
+        Long lastOrderId,
         int size
     ) {
-        RestPage<OrderList> orderLists = redisTemplate.opsForValue().get(subject);
+        List<OrderList> orderLists = redisTemplate.opsForValue().get(subject);
         if(orderLists != null){
             return orderLists;
         }
-        RestPage<OrderList> orders = orderQueryRepository.getOrders(subject, page, size);
+        List<OrderList> orders = orderQueryRepository.getOrders(subject, lastOrderId, size);
         redisTemplate.opsForValue().set(subject, orders, 3, TimeUnit.MINUTES);
         return orders;
     }
