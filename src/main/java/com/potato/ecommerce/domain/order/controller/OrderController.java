@@ -8,7 +8,6 @@ import com.potato.ecommerce.domain.order.dto.OrderInfo;
 import com.potato.ecommerce.domain.order.dto.OrderInfoWithHistory;
 import com.potato.ecommerce.domain.order.dto.OrderList;
 import com.potato.ecommerce.domain.order.service.OrderService;
-import com.potato.ecommerce.global.util.RestPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,7 +63,7 @@ public class OrderController {
     @Operation(summary = "주문 목록 조회")
     public ResponseEntity<List<OrderList>> getOrders(
         HttpServletRequest httpServletRequest,
-        @RequestParam(defaultValue = "0") Long lastOrderId,
+        @RequestParam(required = false) Long lastOrderId,
         @RequestParam(defaultValue = "10") int size
     ) {
         String subject = getSubject(httpServletRequest);
