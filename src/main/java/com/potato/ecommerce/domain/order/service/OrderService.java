@@ -17,7 +17,6 @@ import com.potato.ecommerce.domain.receiver.entity.ReceiverEntity;
 import com.potato.ecommerce.domain.receiver.repository.ReceiverJpaRepository;
 import com.potato.ecommerce.global.config.redis.lock.DistributedLock;
 import com.potato.ecommerce.global.exception.ExceptionMessage;
-import com.potato.ecommerce.global.util.RestPage;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
@@ -100,10 +99,10 @@ public class OrderService {
         Long lastOrderId,
         int size
     ) {
-        List<OrderList> orderLists = redisTemplate.opsForValue().get(subject);
-        if(orderLists != null){
-            return orderLists;
-        }
+//        List<OrderList> orderLists = redisTemplate.opsForValue().get(subject);
+//        if (orderLists != null) {
+//            return orderLists;
+//        }
         List<OrderList> orders = orderQueryRepository.getOrders(subject, lastOrderId, size);
         redisTemplate.opsForValue().set(subject, orders, 3, TimeUnit.MINUTES);
         return orders;
