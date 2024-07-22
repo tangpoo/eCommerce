@@ -3,6 +3,7 @@ package com.potato.ecommerce.domain.order;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -57,19 +58,19 @@ public class OrderServiceTests {
     private ReceiverJpaRepository receiverJpaRepository;
 
     @Mock
+    private HistoryService historyService;
+
+    @Mock
     private OrderJpaRepository orderJpaRepository;
 
     @Mock
     private OrderQueryRepository orderQueryRepository;
 
     @Mock
-    private HistoryService historyService;
+    private RedisTemplate<String, List<OrderList>> redisTemplate;
 
     @Mock
-    private RedisTemplate<String, RestPage<OrderList>> redisTemplate;
-
-    @Mock
-    private ValueOperations<String, RestPage<OrderList>> valueOperations;
+    private ValueOperations<String, List<OrderList>> valueOperations;
 
     @Spy
     private BCryptPasswordEncoder passwordEncoder;
@@ -166,7 +167,7 @@ public class OrderServiceTests {
     class Order_find_all {
 
         private final String subject = "test@email.com";
-        private final int page = 0;
+        private final Long lastOrderId = 0L;
         private final int size = 10;
 
 
@@ -183,25 +184,18 @@ public class OrderServiceTests {
             orderLists.add(orderList1);
             orderLists.add(orderList2);
 
-            final PageRequest pageable = PageRequest.of(page, size);
-            int count = 2;
-            final RestPage<OrderList> restPage = new RestPage<>(
-                new PageImpl<>(orderLists, pageable, count));
-
-            System.out.println("test " + restPage.get().findFirst().get().getOrderNum());
-
             orderLists.add(orderList1);
             orderLists.add(orderList2);
 
             given(redisTemplate.opsForValue()).willReturn(valueOperations);
-            given(redisTemplate.opsForValue().get(subject)).willReturn(restPage);
+            given(redisTemplate.opsForValue().get(subject)).willReturn(orderLists);
 
             // Act
-            final RestPage<OrderList> response = orderService.getOrders(subject, page, size);
+            final List<OrderList> response = orderService.getOrders(subject, lastOrderId, size);
 
             // Assert
-            assertThat(response.get().findFirst().get()).isEqualTo(orderList1);
-            verify(orderQueryRepository, times(0)).getOrders(anyString(), anyInt(), anyInt());
+            assertThat(response.get(0)).isEqualTo(orderList1);
+            verify(orderQueryRepository, times(0)).getOrders(anyString(), anyLong(), anyInt());
         }
 
         @Test
@@ -217,22 +211,17 @@ public class OrderServiceTests {
             orderLists.add(orderList1);
             orderLists.add(orderList2);
 
-            final PageRequest pageable = PageRequest.of(page, size);
-            int count = 2;
-            final RestPage<OrderList> restPage = new RestPage<>(
-                new PageImpl<>(orderLists, pageable, count));
-
             given(redisTemplate.opsForValue()).willReturn(valueOperations);
             given(redisTemplate.opsForValue().get(subject)).willReturn(null);
-            given(orderQueryRepository.getOrders(subject, page, size)).willReturn(restPage);
+            given(orderQueryRepository.getOrders(subject, lastOrderId, size)).willReturn(orderLists);
 
             // Act
-            final RestPage<OrderList> response = orderService.getOrders(subject, page, size);
+            final List<OrderList> response = orderService.getOrders(subject, lastOrderId, size);
 
             // Assert
-            assertThat(response.get().findFirst().get()).isEqualTo(orderList1);
-            verify(orderQueryRepository, times(1)).getOrders(subject, page, size);
-            verify(redisTemplate.opsForValue(), times(1)).set(subject, restPage, 3,
+            assertThat(response.get(0)).isEqualTo(orderList1);
+            verify(orderQueryRepository, times(1)).getOrders(subject, lastOrderId, size);
+            verify(redisTemplate.opsForValue(), times(1)).set(subject, orderLists, 3,
                 TimeUnit.MINUTES);
         }
     }
