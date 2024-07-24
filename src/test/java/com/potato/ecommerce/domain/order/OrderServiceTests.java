@@ -184,9 +184,6 @@ public class OrderServiceTests {
             orderLists.add(orderList1);
             orderLists.add(orderList2);
 
-            orderLists.add(orderList1);
-            orderLists.add(orderList2);
-
             given(redisTemplate.opsForValue()).willReturn(valueOperations);
             given(redisTemplate.opsForValue().get(subject)).willReturn(orderLists);
 

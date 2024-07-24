@@ -99,10 +99,10 @@ public class OrderService {
         Long lastOrderId,
         int size
     ) {
-//        List<OrderList> orderLists = redisTemplate.opsForValue().get(subject);
-//        if (orderLists != null) {
-//            return orderLists;
-//        }
+        List<OrderList> orderLists = redisTemplate.opsForValue().get(subject);
+        if (orderLists != null) {
+            return orderLists;
+        }
         List<OrderList> orders = orderQueryRepository.getOrders(subject, lastOrderId, size);
         redisTemplate.opsForValue().set(subject, orders, 3, TimeUnit.MINUTES);
         return orders;
