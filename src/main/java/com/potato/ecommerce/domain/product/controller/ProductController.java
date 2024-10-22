@@ -6,6 +6,7 @@ import com.potato.ecommerce.domain.product.dto.ProductResponse;
 import com.potato.ecommerce.domain.product.dto.ProductSimpleResponse;
 import com.potato.ecommerce.domain.product.dto.ProductUpdateRequest;
 import com.potato.ecommerce.domain.product.dto.ShopProductResponse;
+import com.potato.ecommerce.domain.product.entity.Product;
 import com.potato.ecommerce.domain.product.service.ProductService;
 import com.potato.ecommerce.domain.s3.service.S3Service;
 import com.potato.ecommerce.global.util.RestPage;
@@ -13,7 +14,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "Product API")
 @RequestMapping("/api/v1")
+@Slf4j
 public class ProductController {
 
     private final ProductService productService;
@@ -78,12 +82,12 @@ public class ProductController {
 
     @GetMapping("/products/search")
     @Operation(summary = "상품 검색 조회")
-    public ResponseEntity<RestPage<ProductSimpleResponse>> getProductBySearch(
+    public ResponseEntity<List<Product>> getProductBySearch(
         @RequestParam String keyword,
-        @RequestParam(value = "lastHabitId", defaultValue = "0") int lastHabitId,
+        @RequestParam(value = "lastHabitId", defaultValue = "0", required = false) int lastHabitId,
         @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        RestPage<ProductSimpleResponse> products =
+        List<Product> products =
             productService.findAllByContainingKeyword(keyword, lastHabitId, size);
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
@@ -119,4 +123,14 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PostMapping("/products/index/all")
+    public ResponseEntity<String> productsIndexAll() {
+        productService.indexAll();
+        return ResponseEntity.status(HttpStatus.OK).body("상품 데이터를 인덱싱하였습니다.");
+    }
+
+    @GetMapping("/products/index/all")
+    public ResponseEntity<Iterable<Product>> findAllProductIndex() {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findIndexAll());
+    }
 }
