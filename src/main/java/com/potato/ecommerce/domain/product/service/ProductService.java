@@ -12,8 +12,9 @@ import com.potato.ecommerce.domain.product.dto.ProductResponse;
 import com.potato.ecommerce.domain.product.dto.ProductSimpleResponse;
 import com.potato.ecommerce.domain.product.dto.ProductUpdateRequest;
 import com.potato.ecommerce.domain.product.dto.ShopProductResponse;
+import com.potato.ecommerce.domain.product.entity.Product;
 import com.potato.ecommerce.domain.product.entity.ProductEntity;
-import com.potato.ecommerce.domain.product.repository.ProductJdbcRepository;
+import com.potato.ecommerce.domain.product.repository.ProductElasticSearchRepository;
 import com.potato.ecommerce.domain.product.repository.ProductQueryRepositoryImpl;
 import com.potato.ecommerce.domain.product.repository.ProductRepository;
 import com.potato.ecommerce.domain.s3.service.ImageService;
@@ -22,21 +23,26 @@ import com.potato.ecommerce.domain.store.entity.StoreEntity;
 import com.potato.ecommerce.domain.store.repository.StoreRepository;
 import com.potato.ecommerce.global.util.RestPage;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductQueryRepositoryImpl productQueryRepository;
-    private final ProductJdbcRepository jdbcRepository;
+    private final ProductElasticSearchRepository elasticSearchRepository;
     private final StoreRepository storeRepository;
     private final ProductCategoryRepository productCategoryRepository;
-
     private final ImageService imageService;
 
     @Transactional
@@ -109,9 +115,11 @@ public class ProductService {
     }
 
 
-    public RestPage<ProductSimpleResponse> findAllByContainingKeyword(String keyword, int lastHabitId,
+    public List<Product> findAllByContainingKeyword(String keyword,
+        int lastHabitId,
         int size) {
-        return jdbcRepository.findAllByKeyword(searchKeywordEncoding(keyword), lastHabitId, size);
+        Pageable pageable = PageRequest.of(lastHabitId, size);
+        return elasticSearchRepository.findAllByName(keyword, pageable);
     }
 
 
@@ -150,15 +158,32 @@ public class ProductService {
         productRepository.delete(productEntity);
     }
 
+    public void indexAll() {
+        List<ProductEntity> products = productRepository.findAll();
+        List<Product> productsDocs = new ArrayList<>();
 
-    private String searchKeywordEncoding(String keyword) {
-        String[] words = keyword.split(" ");
-        StringBuilder sb = new StringBuilder();
-        for (String word : words) {
-            sb.append("+").append(word).append("* ");
+
+        for(ProductEntity productEntity : products) {
+            Product product = new Product(productEntity);
+            productsDocs.add(product);
+            log.info(product.getName());
         }
 
-        return sb.toString().trim();
+        elasticSearchRepository.saveAll(productsDocs);
     }
+
+    public Iterable<Product> findIndexAll() {
+        return elasticSearchRepository.findAll();
+    }
+
+//    private String searchKeywordEncoding(String keyword) {
+//        String[] words = keyword.split(" ");
+//        StringBuilder sb = new StringBuilder();
+//        for (String word : words) {
+//            sb.append("+").append(word).append("* ");
+//        }
+//
+//        return sb.toString().trim();
+//    }
 
 }
