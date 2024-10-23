@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -132,5 +133,12 @@ public class ProductController {
     @GetMapping("/products/index/all")
     public ResponseEntity<Iterable<Product>> findAllProductIndex() {
         return ResponseEntity.status(HttpStatus.OK).body(productService.findIndexAll());
+    }
+
+    @GetMapping("/products/search/category/{categoryId}")
+    public ResponseEntity<Double> searchProductCategoryPriceAverage(
+        @PathVariable Long categoryId
+    ) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.searchProductCategoryPriceAverage(categoryId));
     }
 }
