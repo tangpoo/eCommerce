@@ -14,7 +14,8 @@ import com.potato.ecommerce.domain.product.dto.ProductUpdateRequest;
 import com.potato.ecommerce.domain.product.dto.ShopProductResponse;
 import com.potato.ecommerce.domain.product.entity.Product;
 import com.potato.ecommerce.domain.product.entity.ProductEntity;
-import com.potato.ecommerce.domain.product.repository.ProductElasticSearchRepository;
+import com.potato.ecommerce.domain.product.repository.search.ProductSearchQueryRepository;
+import com.potato.ecommerce.domain.product.repository.search.ProductSearchRepository;
 import com.potato.ecommerce.domain.product.repository.ProductQueryRepositoryImpl;
 import com.potato.ecommerce.domain.product.repository.ProductRepository;
 import com.potato.ecommerce.domain.s3.service.ImageService;
@@ -23,6 +24,7 @@ import com.potato.ecommerce.domain.store.entity.StoreEntity;
 import com.potato.ecommerce.domain.store.repository.StoreRepository;
 import com.potato.ecommerce.global.util.RestPage;
 import jakarta.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +42,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductQueryRepositoryImpl productQueryRepository;
-    private final ProductElasticSearchRepository elasticSearchRepository;
+    private final ProductSearchRepository elasticSearchRepository;
+    private final ProductSearchQueryRepository productSearchQueryRepository;
     private final StoreRepository storeRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final ImageService imageService;
@@ -174,6 +177,10 @@ public class ProductService {
 
     public Iterable<Product> findIndexAll() {
         return elasticSearchRepository.findAll();
+    }
+
+    public Double searchProductCategoryPriceAverage(Long productCategoryId) throws IOException {
+        return productSearchQueryRepository.searchProductCategoryPriceAverage(productCategoryId);
     }
 
 //    private String searchKeywordEncoding(String keyword) {
