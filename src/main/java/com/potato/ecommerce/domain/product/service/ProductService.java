@@ -25,6 +25,7 @@ import com.potato.ecommerce.domain.store.repository.StoreRepository;
 import com.potato.ecommerce.global.util.RestPage;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +67,7 @@ public class ProductService {
             .description(requestDto.getDescription())
             .price(requestDto.getPrice())
             .stock(requestDto.getStock())
+            .createdAt(LocalDateTime.now())
             .build();
 
         ProductEntity save = productRepository.save(productEntity);
