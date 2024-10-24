@@ -13,16 +13,16 @@ public class ProductRequest {
 
     private Long productCategoryId;
 
-    @Size(max = 150)
-    @NotBlank
+//    @Size(max = 150)
+//    @NotBlank
     private String name;
 
     private String description;
 
-    @NotNull
+//    @NotNull
     private Long price;
 
-    @NotNull
+//    @NotNull
     private Integer stock;
 
     private MultipartFile image;

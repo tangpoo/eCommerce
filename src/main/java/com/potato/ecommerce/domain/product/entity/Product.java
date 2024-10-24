@@ -52,7 +52,7 @@ public class Product {
     @Field(type = FieldType.Boolean)
     private Boolean isDeleted;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_time)
+    @Field(type = FieldType.Date, format = {}, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 
     public Product(ProductEntity productEntity) {
