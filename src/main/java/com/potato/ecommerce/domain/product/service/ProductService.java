@@ -14,10 +14,10 @@ import com.potato.ecommerce.domain.product.dto.ProductUpdateRequest;
 import com.potato.ecommerce.domain.product.dto.ShopProductResponse;
 import com.potato.ecommerce.domain.product.entity.Product;
 import com.potato.ecommerce.domain.product.entity.ProductEntity;
-import com.potato.ecommerce.domain.product.repository.search.ProductSearchQueryRepository;
-import com.potato.ecommerce.domain.product.repository.search.ProductSearchRepository;
 import com.potato.ecommerce.domain.product.repository.ProductQueryRepositoryImpl;
 import com.potato.ecommerce.domain.product.repository.ProductRepository;
+import com.potato.ecommerce.domain.product.repository.search.ProductSearchQueryRepository;
+import com.potato.ecommerce.domain.product.repository.search.ProductSearchRepository;
 import com.potato.ecommerce.domain.s3.service.ImageService;
 import com.potato.ecommerce.domain.store.dto.StoreResponse;
 import com.potato.ecommerce.domain.store.entity.StoreEntity;
@@ -167,8 +167,7 @@ public class ProductService {
         List<ProductEntity> products = productRepository.findAll();
         List<Product> productsDocs = new ArrayList<>();
 
-
-        for(ProductEntity productEntity : products) {
+        for (ProductEntity productEntity : products) {
             Product product = new Product(productEntity);
             productsDocs.add(product);
             log.info(product.getName());
